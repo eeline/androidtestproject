@@ -1,0 +1,8 @@
+<ToggleButton
+        android:id="@+id/mediaToggle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="26dp"
+        android:onClick="onClicked"
+        android:textOff="@string/mediaToggleOn"
+        android:textOn="@string/mediaToggleOff" />
