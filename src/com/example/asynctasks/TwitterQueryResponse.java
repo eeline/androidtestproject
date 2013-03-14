@@ -1,16 +1,17 @@
-package asynctasks;
+package com.example.asynctasks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.datatypes.Result;
 
 public class TwitterQueryResponse {
 	private String query;
-	private List<Result> results;
+	private ArrayList<Result> results;
 
 	public TwitterQueryResponse(String query, List<Result> results) {
 		this.query = query;
-		this.results = results;
+		this.results = (ArrayList<Result>) results;
 	}
 	
 	public String getQuery(){

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 
 import org.apache.http.client.ClientProtocolException;
 
@@ -17,9 +18,10 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-import asynctasks.InputStreamHandler;
-import asynctasks.TwitterQueryResponse;
 
+import com.example.asynctasks.InputStreamHandler;
+import com.example.asynctasks.TwitterQueryResponse;
+import com.example.datatypes.Result;
 import com.example.datatypes.SearchResponse;
 import com.google.gson.Gson;
 
@@ -141,15 +143,16 @@ public class MainActivity extends Activity {
 		@Override
 		//TODO reimplement for multiple searches
 		protected TwitterQueryResponse doInBackground(String... params) {
+			TwitterQueryResponse response = null;
 			try {
-				return parseTwitter((String) params[0]);
+				 response = parseTwitter((String) params[0]);
 			} catch (ClientProtocolException e) {
 				ExceptionHandling.handleException(e, "parseTwitter(String)", DEBUG_TAG);
 			} catch (IOException e) {
 				ExceptionHandling.handleException(e, "parseTwitter(String)", DEBUG_TAG);
-			}	
-			
-			return null;
+			}
+			return response;	
+
 		}
 		
 		private TwitterQueryResponse parseTwitter(String message) throws IOException, ClientProtocolException {
@@ -171,6 +174,9 @@ public class MainActivity extends Activity {
 		@Override 
 		protected void onPostExecute(TwitterQueryResponse response){
 			doToast(response.getQuery());
+			List<Result> results = response.getResults();
+			for (Result result : results)
+				doToast(result.fromUser);
 		}
 
 	}
