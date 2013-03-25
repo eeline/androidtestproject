@@ -1,17 +1,8 @@
 package com.example.testproject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.List;
-
-import org.apache.http.client.ClientProtocolException;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -19,16 +10,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.asynctasks.InputStreamHandler;
-import com.example.asynctasks.TwitterQueryResponse;
-import com.example.datatypes.Result;
-import com.example.datatypes.SearchResponse;
-import com.google.gson.Gson;
+import com.example.asynctasks.QueryTwitterService;
 
 public class MainActivity extends Activity {
 	private MediaManager media;
 	private static String DEBUG_TAG = MainActivity.class.getName() + ": ";
 	private static String QUERY_GOOGLE = "https://www.google.com/?q=";
+	private static String DISPLAY_TWEETS = "DISPLAY_TWEETS_INTENT";
 	private Toast toast;
 
 	
@@ -51,11 +39,6 @@ public class MainActivity extends Activity {
 			ExceptionHandling.handleException(e, "onCreate()", DEBUG_TAG);
 		}
 	}
-	
-	private void doToast(String message){
-		toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
-		toast.show();
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -73,12 +56,13 @@ public class MainActivity extends Activity {
 				handleSendIntent(new Intent(this, DisplayMessageActivity.class), message);
 				break;
 			case R.id.twitterButton:
-				handleTwitterQuery(message);
+				Intent intent = new Intent(this, QueryTwitterService.class);
+				super.startService(intent);
 				break;
 			case R.id.internetButton:
-				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setData(Uri.parse(QUERY_GOOGLE + message));
-				super.startActivity(intent);
+				Intent inten = new Intent(Intent.ACTION_VIEW);
+				inten.setData(Uri.parse(QUERY_GOOGLE + message));
+				super.startActivity(inten);
 				break;
 			case R.id.mediaToggle:
 				handleMediaToggle();
@@ -88,11 +72,6 @@ public class MainActivity extends Activity {
 	}
 
 	//START handlers	
-	private void handleTwitterQuery(String message) {
-		TwitterParserAsyncTask task = new TwitterParserAsyncTask();
-		task.execute(message);
-	}
-
 	private void handleSendIntent(Intent intent, String message) {
 		intent.putExtra(EXTRA_MESSAGE, message);
 		super.startActivity(intent);
@@ -105,6 +84,14 @@ public class MainActivity extends Activity {
 			media.play();
 	}
 	//END Handlers
+	
+	//START utility functions	
+	@SuppressWarnings("unused")
+	private void doToast(String message){
+		toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
+		toast.show();
+	}
+	//END utility functions
 	
 	//START State Change Management
 	@Override
@@ -135,49 +122,4 @@ public class MainActivity extends Activity {
 		Log.i(DEBUG_TAG + "onPause()", "pausing");
 	}
 	//END State Change Management
-	
-	private class TwitterParserAsyncTask extends AsyncTask<String, Integer, TwitterQueryResponse> {
-		private final String DEBUG_TAG = TwitterParserAsyncTask.class.toString() + ": ";
-		private final String TWITTER_QUERY = "http://search.twitter.com/search.json?q=";
-		
-		@Override
-		//TODO reimplement for multiple searches
-		protected TwitterQueryResponse doInBackground(String... params) {
-			TwitterQueryResponse response = null;
-			try {
-				 response = parseTwitter((String) params[0]);
-			} catch (ClientProtocolException e) {
-				ExceptionHandling.handleException(e, "parseTwitter(String)", DEBUG_TAG);
-			} catch (IOException e) {
-				ExceptionHandling.handleException(e, "parseTwitter(String)", DEBUG_TAG);
-			}
-			return response;	
-
-		}
-		
-		private TwitterQueryResponse parseTwitter(String message) throws IOException, ClientProtocolException {
-			Gson gson = new Gson();
-			InputStream source = null;
-			try {
-				source = InputStreamHandler.retrieveStream(Uri.parse(TWITTER_QUERY + message));
-				
-				Reader reader = new InputStreamReader(source);
-				SearchResponse response =gson.fromJson(reader, SearchResponse.class);
-				
-				return new TwitterQueryResponse(response.query, response.results);
-				
-			} finally{
-				source.close();
-			}
-		}
-		
-		@Override 
-		protected void onPostExecute(TwitterQueryResponse response){
-			doToast(response.getQuery());
-			List<Result> results = response.getResults();
-			for (Result result : results)
-				doToast(result.fromUser);
-		}
-
-	}
 }

@@ -56,6 +56,8 @@ public final class R {
         public static final int text_message=0x7f050002;
         public static final int title_activity_internet=0x7f05000a;
         public static final int title_activity_twitter_parser=0x7f05000e;
+        public static final int title_tweet_detail=0x7f050010;
+        public static final int title_tweet_list=0x7f05000f;
         public static final int tutorialTextHint=0x7f050005;
         public static final int twitter_query=0x7f05000c;
     }

@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 public class DisplayMessageActivity extends Activity {
+	@SuppressWarnings("unused")
 	private static String DEBUG_TAG = DisplayMessageActivity.class.getName() + ": ";
 	private String STATE_MESSAGE = "STATE_MESSAGE";
 	private String message;

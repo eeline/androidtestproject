@@ -16,5 +16,7 @@
     <string name="twitter_query">Query Twitter</string>
     <string name="onClick">onClick</string>
     <string name="title_activity_twitter_parser">TwitterParser</string>
+    <string name="title_tweet_list">Tweets</string>
+    <string name="title_tweet_detail">Tweet Detail</string>
 
 </resources>

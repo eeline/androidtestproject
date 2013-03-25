@@ -37,10 +37,22 @@
         <activity
             android:name="com.example.testproject.InternetActivity"
             android:label="@string/title_activity_internet" >
-            android:parentActivityName="com.example.testproject.MainActivity" >
+            android:parentActivityName="com.example.testproject.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.testproject.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.testproject.TweetListActivity"
+            android:label="@string/title_tweet_list" >
+        </activity>
+        <activity
+            android:name="com.example.testproject.TweetDetailActivity"
+            android:label="@string/title_tweet_detail"
+            android:parentActivityName=".TweetListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TweetListActivity" />
         </activity>
     </application>
 
