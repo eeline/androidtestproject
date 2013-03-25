@@ -1,4 +1,6 @@
-package com.example.testproject;
+package com.example.activities;
+
+import com.example.testproject.R;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

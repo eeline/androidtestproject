@@ -12,8 +12,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.activities.ExceptionHandling;
 import com.example.datatypes.SearchResponse;
-import com.example.testproject.ExceptionHandling;
 import com.google.gson.Gson;
 
 public class QueryTwitterService extends IntentService {

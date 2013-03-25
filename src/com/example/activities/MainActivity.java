@@ -1,4 +1,4 @@
-package com.example.testproject;
+package com.example.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.asynctasks.QueryTwitterService;
+import com.example.testproject.R;
 
 public class MainActivity extends Activity {
 	private MediaManager media;

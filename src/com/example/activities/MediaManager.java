@@ -1,4 +1,4 @@
-package com.example.testproject;
+package com.example.activities;
 
 import android.content.Context;
 import android.media.MediaPlayer;
