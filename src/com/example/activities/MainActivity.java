@@ -1,7 +1,9 @@
 package com.example.activities;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +21,7 @@ public class MainActivity extends Activity {
 	private static String QUERY_GOOGLE = "https://www.google.com/?q=";
 	private static String DISPLAY_TWEETS = "DISPLAY_TWEETS_INTENT";
 	private Toast toast;
+	private PackageManager manager;
 
 	
 	public static String EXTRA_MESSAGE = "com.example.testproject.MESSAGE";
@@ -31,7 +34,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		media = new MediaManager(getApplicationContext());
+		//media = new MediaManager(getApplicationContext());
 		
 		//if(media == null)
 			//Log.e(DEBUG_TAG + "onCreate()", "media is null");
@@ -51,7 +54,7 @@ public class MainActivity extends Activity {
 	public void onClick(View view){
 		EditText text = (EditText)findViewById(R.id.tutorialText);
 		String message = text.getText().toString();
-		
+		//TODO switch these to using intents that are recognized by broadcastreceivers
 		switch(view.getId()){
 			case R.id.inputButton:
 				handleSendIntent(new Intent(this, DisplayMessageActivity.class), message);
@@ -91,6 +94,24 @@ public class MainActivity extends Activity {
 	private void doToast(String message){
 		toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
 		toast.show();
+	}
+	
+	private void verifyAndStartActivity(Intent intent){
+		manager = getPackageManager();
+		ComponentName component = intent.resolveActivity(manager);
+		
+		if(component == null){
+			Uri marketUri = Uri.parse("market://searchq=pname:com.example.activities");
+			Intent marketIntent = new Intent(Intent.ACTION_VIEW).setData(marketUri);
+		
+		
+			if(marketIntent.resolveActivity(manager) != null)
+				startActivity(marketIntent);
+			else
+				Log.d(DEBUG_TAG + "verifyReceiverExists(Intent)", "Market client not available");
+		}
+		else
+			startActivity(intent);
 	}
 	//END utility functions
 	

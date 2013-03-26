@@ -22,12 +22,13 @@ public class QueryTwitterService extends IntentService {
 	public static final String RESULT_LIST= "RESULT_LIST";
 	public static final String TWITTER_QUERY_RESPONSE = "TWITTER_QUERY_RESPONSE";
 	public static final String USER_QUERY = "USER_QUERY";
+	private static final String TWITTER_QUERY_SERVICE = "TWITTER_QUERY_SERVICE";
 	private String query;
 	
-	public QueryTwitterService(String name) {
-		super(name);
+	public QueryTwitterService() {
+		super(TWITTER_QUERY_SERVICE);
 		// TODO Auto-generated constructor stub
-	}
+	} 
 	
 	@Override
 	public void onHandleIntent(Intent intent) {
@@ -45,7 +46,7 @@ public class QueryTwitterService extends IntentService {
 		if(response == null)
 			Log.e(DEBUG_TAG + "onHandleIntent()", "null response");
 		responseIntent.putExtra(TWITTER_QUERY_RESPONSE, response);
-		startActivity(responseIntent);
+		this.startActivity(responseIntent);
 	}
 	
 	private TwitterQueryResponse parseTwitter(String message) throws IOException, ClientProtocolException {
