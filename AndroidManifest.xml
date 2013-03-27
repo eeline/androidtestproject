@@ -60,6 +60,15 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+
+        <receiver
+            android:name="com.example.receivers.TwitterQueryReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.example.receivers.TwitterQueryReceiver.QUERY_ACTION"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
