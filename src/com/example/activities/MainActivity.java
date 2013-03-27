@@ -3,6 +3,7 @@ package com.example.activities;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.asynctasks.QueryTwitterService;
+import com.example.receivers.TwitterQueryReceiver;
 import com.example.testproject.R;
 
 public class MainActivity extends Activity {
@@ -20,6 +22,8 @@ public class MainActivity extends Activity {
 	private static String DEBUG_TAG = MainActivity.class.getName() + ": ";
 	private static String QUERY_GOOGLE = "https://www.google.com/?q=";
 	private static String DISPLAY_TWEETS = "DISPLAY_TWEETS_INTENT";
+	private IntentFilter twitterQueryIntentFilter;
+	private TwitterQueryReceiver twitterQueryReceiver;
 	private Toast toast;
 	private PackageManager manager;
 
@@ -28,11 +32,12 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
-		
 		try {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		this.twitterQueryIntentFilter = new IntentFilter(TwitterQueryReceiver.QUERY_ACTION);
+		this.twitterQueryReceiver = new TwitterQueryReceiver();
+		initReceivers();
 		
 		//media = new MediaManager(getApplicationContext());
 		
@@ -88,7 +93,11 @@ public class MainActivity extends Activity {
 			media.play();
 	}
 	//END Handlers
-	
+	//START Receiver init
+	private void initReceivers(){
+		this.registerReceiver(this.twitterQueryReceiver, this.twitterQueryIntentFilter);
+	}
+	//END Receiver init
 	//START utility functions	
 	@SuppressWarnings("unused")
 	private void doToast(String message){
