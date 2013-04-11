@@ -12,4 +12,5 @@ public class ExceptionHandling {
 		for(StackTraceElement element : elements)
 			Log.e(DEBUG_TAG + "stackTraceElement[]", element.toString());
 	}
+	
 }

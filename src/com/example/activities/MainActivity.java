@@ -1,10 +1,7 @@
 package com.example.activities;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,30 +11,20 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.asynctasks.QueryTwitterService;
-import com.example.receivers.TwitterQueryReceiver;
 import com.example.testproject.R;
 
 public class MainActivity extends Activity {
-	private MediaManager media;
 	private static String DEBUG_TAG = MainActivity.class.getName() + ": ";
 	private static String QUERY_GOOGLE = "https://www.google.com/?q=";
-	private static String DISPLAY_TWEETS = "DISPLAY_TWEETS_INTENT";
-	private IntentFilter twitterQueryIntentFilter;
-	private TwitterQueryReceiver twitterQueryReceiver;
 	private Toast toast;
-	private PackageManager manager;
-
-	
-	public static String EXTRA_MESSAGE = "com.example.testproject.MESSAGE";
+	//private PackageManager manager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		try {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		this.twitterQueryIntentFilter = new IntentFilter(TwitterQueryReceiver.QUERY_ACTION);
-		this.twitterQueryReceiver = new TwitterQueryReceiver();
-		initReceivers();
+		
 		
 		//media = new MediaManager(getApplicationContext());
 		
@@ -61,43 +48,20 @@ public class MainActivity extends Activity {
 		String message = text.getText().toString();
 		//TODO switch these to using intents that are recognized by broadcastreceivers
 		switch(view.getId()){
-			case R.id.inputButton:
-				handleSendIntent(new Intent(this, DisplayMessageActivity.class), message);
-				break;
 			case R.id.twitterButton:
-				Intent intent = new Intent(this, QueryTwitterService.class);
-				super.startService(intent);
+				Intent twitterIntent = new Intent(this, QueryTwitterService.class);
+				twitterIntent.putExtra(QueryTwitterService.USER_QUERY, message);
+				super.startService(twitterIntent);
 				break;
-			case R.id.internetButton:
-				Intent inten = new Intent(Intent.ACTION_VIEW);
-				inten.setData(Uri.parse(QUERY_GOOGLE + message));
-				super.startActivity(inten);
-				break;
-			case R.id.mediaToggle:
-				handleMediaToggle();
 			default:
+				//default should not be reachable
 				Log.i(DEBUG_TAG + "onClick(View)", "no input");
 		}
 	}
 
 	//START handlers	
-	private void handleSendIntent(Intent intent, String message) {
-		intent.putExtra(EXTRA_MESSAGE, message);
-		super.startActivity(intent);
-	}
 	
-	private void handleMediaToggle(){
-		if (media.isPlaying())
-			media.pause();
-		else 
-			media.play();
-	}
 	//END Handlers
-	//START Receiver init
-	private void initReceivers(){
-		this.registerReceiver(this.twitterQueryReceiver, this.twitterQueryIntentFilter);
-	}
-	//END Receiver init
 	//START utility functions	
 	@SuppressWarnings("unused")
 	private void doToast(String message){
@@ -105,6 +69,7 @@ public class MainActivity extends Activity {
 		toast.show();
 	}
 	
+	/* no use for this yet
 	private void verifyAndStartActivity(Intent intent){
 		manager = getPackageManager();
 		ComponentName component = intent.resolveActivity(manager);
@@ -121,16 +86,13 @@ public class MainActivity extends Activity {
 		}
 		else
 			startActivity(intent);
-	}
+	}*/
 	//END utility functions
 	
 	//START State Change Management
 	@Override
 	protected void onStop(){
 		super.onStop();
-		
-		if(media != null)
-			media.release();
 		Log.i(DEBUG_TAG + "onStop()", "stopping");
 	}
 	
@@ -141,15 +103,11 @@ public class MainActivity extends Activity {
 	
 	protected void onDestroy(){
 		super.onDestroy();
-		if(media != null)
-			media.release();
 		Log.i(DEBUG_TAG + "onDestroy()", "destroying");
 	}
 	
 	protected void onPause(){
 		super.onPause();
-		if(media != null && media.isPlaying())
-			media.pause();
 		Log.i(DEBUG_TAG + "onPause()", "pausing");
 	}
 	//END State Change Management

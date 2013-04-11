@@ -20,13 +20,6 @@
         android:inputType="text"/>
 
     <Button
-        android:id="@+id/inputButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/inputButtonName"
-        android:onClick="@string/onClick"/>
-
-    <Button
         android:id="@+id/internetButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

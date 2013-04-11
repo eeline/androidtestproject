@@ -1,22 +1,24 @@
 package com.example.activities;
 
-import com.example.testproject.R;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+
+import com.example.asynctasks.QueryTwitterService;
+import com.example.fragments.TwitterListViewFragment;
+import com.example.testproject.R;
 
 public class DisplayMessageActivity extends Activity {
 	@SuppressWarnings("unused")
 	private static String DEBUG_TAG = DisplayMessageActivity.class.getName() + ": ";
-	private String STATE_MESSAGE = "STATE_MESSAGE";
-	private String message;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,29 +27,22 @@ public class DisplayMessageActivity extends Activity {
 		setContentView(R.layout.activity_display_message);
 		
 		Intent intent = super.getIntent();
-		message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+		FragmentManager manager = getFragmentManager();
+		TwitterListViewFragment twitterListFragment = (TwitterListViewFragment)manager.findFragmentById(R.id.TwitterListEntryFragment);
 		
-			if(message.equals(""))
-				if(savedInstanceState != null)
-					setContentView(setupTextView(savedInstanceState.getString(STATE_MESSAGE)));
-				else
-					setContentView(setupTextView(message));
-			else
-				setContentView(setupTextView(message));
-		
-			
+		ArrayAdapter<String> adaptedMessages = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, intent.getStringArrayListExtra(QueryTwitterService.TWITTER_QUERY_RESPONSE));
+		twitterListFragment.setListAdapter(adaptedMessages);
 		// Show the Up button in the action bsar.
 		setupActionBar();
 	}
-
+	/*
 	private TextView setupTextView(String message) {
 		TextView textView = new TextView(this);
-		textView.setTextSize(40);
 		textView.setText(message);
 		return textView;
 		
 	}
-
+	*/
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
@@ -84,7 +79,6 @@ public class DisplayMessageActivity extends Activity {
 	
 	@Override 
 	public void onSaveInstanceState(Bundle savedInstanceState){
-		savedInstanceState.putString(STATE_MESSAGE, message);
 		super.onSaveInstanceState(savedInstanceState);
 	}
 

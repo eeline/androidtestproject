@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.activities.DisplayMessageActivity;
 import com.example.activities.ExceptionHandling;
 import com.example.datatypes.SearchResponse;
 import com.google.gson.Gson;
@@ -35,6 +36,9 @@ public class QueryTwitterService extends IntentService {
 		query = intent.getStringExtra(USER_QUERY);
 		TwitterQueryResponse response = null;
 		try {
+			if(query == null || query =="")
+				ExceptionHandling.handleException(new Exception("EMPTY OR NULL QUERY"), "parseTwitter(String)", DEBUG_TAG);
+			
 			 response = parseTwitter(query);
 		} catch (ClientProtocolException e) {
 			ExceptionHandling.handleException(e, "parseTwitter(String)", DEBUG_TAG);
@@ -42,7 +46,7 @@ public class QueryTwitterService extends IntentService {
 			ExceptionHandling.handleException(e, "parseTwitter(String)", DEBUG_TAG);
 		}
 		
-		Intent responseIntent = new Intent();
+		Intent responseIntent = new Intent(this, DisplayMessageActivity.class);
 		if(response == null)
 			Log.e(DEBUG_TAG + "onHandleIntent()", "null response");
 		responseIntent.putExtra(TWITTER_QUERY_RESPONSE, response);
